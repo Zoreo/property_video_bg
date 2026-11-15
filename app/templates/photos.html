@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Photos · {{ site_name }}{% endblock %}
+{% block content %}
+<div class="summary-line">
+  <span>{{ order.template_label }} · {{ order.address or order.city }}</span>
+  <a href="/order/{{ order.id }}/details">Edit details</a>
+</div>
+
+<section class="card" id="photos"
+         data-order="{{ order.id }}" data-max="{{ max_photos }}" data-seconds="{{ seconds_per_photo }}">
+  <div class="card-head">
+    <h2>Photos</h2>
+    <span class="muted" id="photo-count">0 / {{ max_photos }}</span>
+  </div>
+  <p class="muted">Up to {{ max_photos }} photos, about {{ seconds_per_photo }} seconds each. They play in the order shown: drag to reorder, or use the arrows.</p>
+
+  <label class="dropzone" id="dropzone">
+    <input type="file" id="file-input" accept="image/*" multiple>
+    <strong>Add photos</strong>
+    <span>Tap to choose from your gallery, or drop files here</span>
+  </label>
+
+  <ul class="photo-grid" id="photo-grid" aria-label="Photos in video order"></ul>
+  <p class="error" id="photo-error" role="alert" hidden></p>
+</section>
+
+<form class="card" method="post" action="/order/{{ order.id }}/checkout" id="checkout-form">
+  <label class="toggle">
+    <input type="checkbox" name="staging" value="true" id="staging-toggle" {% if order.staging %}checked{% endif %}>
+    <span><strong>Virtual staging</strong> +{{ format_eur(staging_price) }}<small>Furnish empty rooms. Tick "Empty room" on the photos you want staged.</small></span>
+  </label>
+  <fieldset class="styles" id="styles" {% if not order.staging %}hidden{% endif %}>
+    <legend>Style</legend>
+    <div class="choice-grid choice-3">
+      {% for value, label in style_labels.items() %}
+      <label class="choice style-{{ value }}">
+        <input type="radio" name="staging_style" value="{{ value }}" {% if (order.staging_style and order.staging_style.value == value) or (not order.staging_style and loop.first) %}checked{% endif %}>
+        <span>{{ label }}</span>
+      </label>
+      {% endfor %}
+    </div>
+  </fieldset>
+
+  <div class="total">
+    <div>
+      <span class="muted">Total</span>
+      <strong id="total" data-base="{{ base_price }}" data-staging="{{ staging_price }}">{{ format_eur(base_price) }}</strong>
+    </div>
+    <div class="muted right">Video length about <span id="video-length">0</span> s<br>Ready {{ eta }}</div>
+  </div>
+  <div class="actions">
+    <button class="btn btn-primary btn-large" type="submit" id="pay-btn" disabled>Continue to payment</button>
+  </div>
+</form>
+{% endblock %}
+{% block scripts %}<script src="/static/js/photos.js" defer></script>{% endblock %}

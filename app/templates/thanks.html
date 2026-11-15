@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Thank you · {{ site_name }}{% endblock %}
+{% block content %}
+<section class="card center">
+  {% if paid %}
+  <h1>Thank you, {{ order.agent_name.split(" ")[0] }}.</h1>
+  <p class="lead">We're making your {{ order.template_label }} video for {{ order.address or order.city }}.</p>
+  <p>It should be ready <strong>{{ eta }}</strong>. We'll email the download link to <strong>{{ order.agent_email }}</strong>.</p>
+  <p class="muted">Order status: {{ order.status.value.replace("_", " ") }}</p>
+  {% else %}
+  <h1>Waiting for payment</h1>
+  <p>We haven't received the payment for this order yet. If you just paid, refresh in a few seconds.</p>
+  <a class="btn" href="/order/{{ order.id }}/photos">Back to your order</a>
+  {% endif %}
+</section>
+{% endblock %}

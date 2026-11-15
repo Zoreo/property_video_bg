@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block main_class %}{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">For real estate brokers</p>
+    <h1>Your listing photos, turned into a cinematic video.</h1>
+    <p class="lead">Upload up to 10 photos. We add smooth camera moves, transitions, your listing details and your contact card, and email you the finished video.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary btn-large" href="/order">Create a video for {{ format_eur(base_price) }}</a>
+      <span class="muted">Virtual staging +{{ format_eur(staging_price) }}</span>
+    </div>
+  </div>
+</section>
+
+<section class="container how">
+  <h2>How it works</h2>
+  <ol class="how-grid">
+    <li><strong>Add the listing</strong><span>Size, rooms, city, a template like Just Sold or For Rent, and your contact details.</span></li>
+    <li><strong>Upload photos</strong><span>Up to 10, straight from your phone. Drag them into the order you want them to play.</span></li>
+    <li><strong>Get your video</strong><span>About 6 seconds per photo. We email you a download link, ready for listing sites and social media.</span></li>
+  </ol>
+</section>
+
+<section class="container features">
+  <div class="feature">
+    <h3>Templates</h3>
+    <p>Just Sold, Sold, New Listing and For Rent, with your name, agency, phone and photo at the end.</p>
+  </div>
+  <div class="feature">
+    <h3>Virtual staging</h3>
+    <p>Empty rooms furnished in Modern, Mid Century, Scandinavian, Traditional, Coastal or Japandi style, keeping the room's real walls, windows and floors.</p>
+  </div>
+  <div class="feature">
+    <h3>Works on any device</h3>
+    <p>Order from your phone at the property or from your desktop at the office. No app to install.</p>
+  </div>
+</section>
+{% endblock %}

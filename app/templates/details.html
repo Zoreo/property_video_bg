@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Listing details · {{ site_name }}{% endblock %}
+{% macro v(field) %}{{ values.get(field, "") }}{% endmacro %}
+{% macro checked(field, value) %}{% if values.get(field) == value %}checked{% endif %}{% endmacro %}
+{% block content %}
+<form class="form" method="post" action="/order" enctype="multipart/form-data">
+  <input type="hidden" name="order_id" value="{{ order.id if order else '' }}">
+
+  <section class="card">
+    <h2>Template</h2>
+    <div class="choice-grid choice-4">
+      {% for value, label in template_labels.items() %}
+      <label class="choice">
+        <input type="radio" name="template" value="{{ value }}" required {{ checked("template", value) }}>
+        <span>{{ label }}</span>
+      </label>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Property</h2>
+    <div class="grid">
+      <label class="field span-2"><span class="label">Street address <span class="opt">optional</span></span>
+        <input name="address" autocomplete="street-address" value="{{ v('address') }}">
+      </label>
+      <label class="field"><span class="label">City</span>
+        <input name="city" required autocomplete="address-level2" value="{{ v('city') }}">
+      </label>
+      <label class="field"><span class="label">Neighbourhood <span class="opt">optional</span></span>
+        <input name="neighbourhood" value="{{ v('neighbourhood') }}">
+      </label>
+      <div class="field">
+        <span class="label" id="size-label">Size</span>
+        <div class="input-group" role="group" aria-labelledby="size-label">
+          <input name="size" type="number" inputmode="decimal" min="1" step="any" required value="{{ v('size') }}" aria-label="Size">
+          <select name="size_unit" aria-label="Unit">
+            {% for key, label in units.items() %}
+            <option value="{{ key }}" {% if values.size_unit == key %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="counts span-2">
+      {% for name, label in [("bedrooms", "Bedrooms"), ("bathrooms", "Bathrooms"), ("parking", "Parking")] %}
+      <label class="field"><span class="label">{{ label }}</span>
+        <select name="{{ name }}" required>
+          {% for n in range(0, 7) %}
+          <option value="{{ n }}" {% if values[name] == n|string %}selected{% endif %}>{{ "6+" if n == 6 else n }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>Agent</h2>
+      <select id="saved-profiles" class="compact" aria-label="Use a saved profile" hidden>
+        <option value="">Use saved profile…</option>
+      </select>
+    </div>
+    <div class="grid">
+      <label class="field"><span class="label">Name</span> <input name="agent_name" required autocomplete="name" value="{{ v('agent_name') }}"></label>
+      <label class="field"><span class="label">Agency <span class="opt">optional</span></span><input name="agency" autocomplete="organization" value="{{ v('agency') }}"></label>
+      <label class="field"><span class="label">Phone</span> <input name="agent_phone" type="tel" required autocomplete="tel" value="{{ v('agent_phone') }}"></label>
+      <label class="field"><span class="label">Email <span class="opt">we send the video here</span></span><input name="agent_email" type="email" required autocomplete="email" value="{{ v('agent_email') }}"></label>
+      <label class="field span-2"><span class="label">Your photo <span class="opt">optional, shown on the closing card</span></span>
+        <input name="agent_photo" type="file" accept="image/*">
+      </label>
+    </div>
+    <label class="check"><input type="checkbox" id="save-profile" checked> Save these details on this device for next time</label>
+  </section>
+
+  <section class="card">
+    <h2>Video format</h2>
+    <div class="choice-grid choice-3">
+      {% for value, label, hint in [("landscape", "Landscape 16:9", "Listing sites, YouTube"), ("portrait", "Portrait 9:16", "Instagram, TikTok"), ("both", "Both", "One of each")] %}
+      <label class="choice">
+        <input type="radio" name="video_format" value="{{ value }}" {{ checked("video_format", value) }}>
+        <span>{{ label }}<small>{{ hint }}</small></span>
+      </label>
+      {% endfor %}
+    </div>
+  </section>
+
+  <div class="actions">
+    <button class="btn btn-primary btn-large" type="submit">Continue to photos</button>
+  </div>
+</form>
+{% endblock %}
+{% block scripts %}<script src="/static/js/profile.js" defer></script>{% endblock %}

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#14171b">
+  <title>{% block title %}{{ site_name }}{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/site.css">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  <header class="topbar">
+    <a class="brand" href="/">{{ site_name }}</a>
+    {% block topbar_right %}<a class="btn btn-small" href="/order">Order a video</a>{% endblock %}
+  </header>
+  {% if step %}
+  <ol class="steps" aria-label="Order progress">
+    {% for label in ["Details", "Photos", "Payment"] %}
+    <li class="{% if loop.index < step %}done{% elif loop.index == step %}current{% endif %}"
+        {% if loop.index == step %}aria-current="step"{% endif %}><span>{{ loop.index }}</span>{{ label }}</li>
+    {% endfor %}
+  </ol>
+  {% endif %}
+  <main class="{% block main_class %}container{% endblock %}">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="footer">
+    <span>&copy; {{ site_name }}</span>
+  </footer>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

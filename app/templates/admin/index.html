@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Admin · {{ site_name }}{% endblock %}
+{% block topbar_right %}<span class="muted">Admin</span>{% endblock %}
+{% block content %}
+<h1>Orders</h1>
+{% if not orders %}<p class="muted">No paid orders yet.</p>{% endif %}
+<div class="admin-list">
+  {% for o in orders %}
+  <article class="card admin-order status-{{ o.status.value }}">
+    <header>
+      <strong>{{ o.template_label }} · {{ o.address or o.city }}</strong>
+      <span class="badge">{{ o.status.value.replace("_", " ") }}</span>
+    </header>
+    <p class="muted">{{ o.agent_name }} · {{ o.agent_email }} · {{ o.photos|length }} photos{% if o.staging %} · staging: {{ o.staging_style_label }}{% endif %} · {{ format_eur(o.price_cents) }} · {{ o.created_at.strftime("%d %b %H:%M") }}</p>
+    {% if o.error %}<p class="error">{{ o.error }}</p>{% endif %}
+    {% if o.video_path and o.status.value in ("in_review", "delivered") %}
+    <video src="/v/{{ o.id }}/{{ '16x9' if '16x9' in o.video_path else '9x16' }}.mp4" controls playsinline preload="metadata"></video>
+    {% endif %}
+    <div class="row">
+      {% if o.status.value == "in_review" %}
+      <form method="post" action="/admin/orders/{{ o.id }}/approve"><button class="btn btn-primary">Approve and send</button></form>
+      {% endif %}
+      {% if o.status.value in ("failed", "in_review") %}
+      <form method="post" action="/admin/orders/{{ o.id }}/retry"><button class="btn">Render again</button></form>
+      {% endif %}
+    </div>
+  </article>
+  {% endfor %}
+</div>
+{% endblock %}
